@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"mini_project/config"
 	"mini_project/model"
 	"net/http"
 	"time"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
@@ -22,19 +20,19 @@ type jwtcustomclaims struct {
 }
 
 var (
-	DB   *gorm.DB
-	user *model.User
+// DB   *gorm.DB
+// user *model.User
 )
 
 func init() {
 	//connect db
-	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	DB = db
-	DB.AutoMigrate(user)
+	// dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// DB = db
+	// DB.AutoMigrate(user)
 }
 
 func createJWT(user model.User) interface{} {
@@ -73,7 +71,7 @@ func Login(c echo.Context) error {
 	password := fmt.Sprintf("%v", json_map["password"])
 
 	// user = model.GetUserFromEmail(email)
-	if err := DB.Where("email = @email", sql.Named("email", email)).First(&users).Error; err != nil {
+	if err := config.DB.Where("email = @email", sql.Named("email", email)).First(&users).Error; err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if users.Password != password {
@@ -105,7 +103,7 @@ func CreateUser(c echo.Context) error {
 		Password: password,
 		Name:     name,
 	}
-	result := DB.Create(&users)
+	result := config.DB.Create(&users)
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message":     "success create user",
 		"rowaffected": result.RowsAffected,

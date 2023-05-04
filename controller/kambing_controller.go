@@ -47,7 +47,7 @@ func CreateKambingController(c echo.Context) error {
 		TanggalBeli: time.Now(),
 		Status:      "di kandang",
 		Harga:       harga,
-		UserID:      UserID,
+		UserID:      uint(UserID),
 	}
 	result := model.CreateKambingModel(kambings)
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -56,12 +56,13 @@ func CreateKambingController(c echo.Context) error {
 }
 
 func GetAllKambing(c echo.Context) error {
-	kambings, err := model.GetAllKambing()
+	id, _ := strconv.Atoi(c.Param("id"))
+	UserandKambings, err := model.GetAllKambingsfromUser(id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message":  "success get all data",
-		"kambings": kambings,
+		"message":         "success get all data",
+		"UserandKambings": UserandKambings,
 	})
 }

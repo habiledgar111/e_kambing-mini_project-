@@ -11,8 +11,8 @@ import (
 type User struct {
 	gorm.Model
 	ID       int       `gorm:"primary_key;not null"`
-	Email    string    `gorm:";type:varchar(255)unique;not null"`
-	Password string    `gorm:"notnull"`
-	Name     string    `gorm:"type:varchar(255)"`
-	Kambings []Kambing `gorm:"Foreignkey:UserID;association_foreignkey:ID;"`
+	Email    string    `json:"email" form:"email" gorm:";type:varchar(255)unique;not null"`
+	Password string    `json:"password" form:"password" gorm:"notnull"`
+	Name     string    `json:"name" form:"name" gorm:"type:varchar(255)"`
+	Kambings []Kambing `json:"kambings"`
 }
