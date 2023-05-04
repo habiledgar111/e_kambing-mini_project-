@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type jwtcustomclaims struct {
