@@ -9,24 +9,22 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
-var (
-	DB_perawatan *gorm.DB
-	perawatan    *model.Perawatan
-)
+// var (
+// 	DB_perawatan *gorm.DB
+// 	perawatan    *model.Perawatan
+// )
 
-func init() {
-	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	DB_perawatan = db
-	DB_perawatan.AutoMigrate(perawatan)
-}
+// func init() {
+// 	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
+// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	DB_perawatan = db
+// 	DB_perawatan.AutoMigrate(perawatan)
+// }
 
 func GetAllPerawatanFromKambing(c echo.Context) error {
 	id_kambing := c.Param("id")
@@ -66,6 +64,19 @@ func CreatePerawatanFromKambing(c echo.Context) error {
 		Tanggal:    time.Now(),
 	}
 	result := model.CreatePerawatan(perawatans)
+
+	transaksi := model.Transaksi{
+		Name:       ("Perawatan" + fmt.Sprintf("%v", json_map["KambingID"])),
+		Keterangan: perawatans.Keterangan,
+		KambingID:  perawatans.KambingID,
+		Tanggal:    perawatans.Tanggal,
+	}
+	result_transaksi := model.CreateTransaksifromPerawatan(transaksi)
+
+	if result_transaksi <= 0 {
+		return c.JSON(http.StatusInternalServerError, "error save transaksi")
+	}
+
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": result,
 	})
