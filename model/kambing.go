@@ -59,3 +59,33 @@ func GetAllKambingsfromUser(id int) (User, error) {
 	err := config.DB.Model(&User{}).Preload("Kambings").Find(&user, id).Error
 	return user, err
 }
+
+func UpdateKambing(id int, updatekambing Kambing) (int, Kambing) {
+	var kambing Kambing
+	var tempkambing Kambing
+
+	config.DB.Where("id = ?", id).First(&kambing)
+	config.DB.Where("id = ?", id).First(&tempkambing)
+
+	//masih ada kendala di file name dan keterangan jika kosong salah satu maka data yang disimpan nil
+	if updatekambing.Name != "" {
+		kambing.Name = updatekambing.Name
+	} else {
+		kambing.Name = tempkambing.Name
+	}
+
+	if updatekambing.Status != "" {
+		kambing.Status = updatekambing.Status
+	} else {
+		kambing.Status = tempkambing.Status
+	}
+
+	if updatekambing.Harga > 0 {
+		kambing.Harga = updatekambing.Harga
+	} else {
+		kambing.Harga = tempkambing.Harga
+	}
+
+	result := config.DB.Where("id = ?", id).Updates(&kambing)
+	return int(result.RowsAffected), kambing
+}

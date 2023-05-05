@@ -45,3 +45,30 @@ func CreatePerawatan(perawatan Perawatan) int {
 	result := config.DB.Create((&perawatan))
 	return int(result.RowsAffected)
 }
+
+func DeletePerawatan(PerawatanID int) int {
+	result := config.DB.Delete(&Perawatan{}, PerawatanID)
+	return int(result.RowsAffected)
+}
+
+func UpdatePerawatan(PerawatanID int, UpdatePerawatan Perawatan) (int, Perawatan) {
+	var perawatan Perawatan
+
+	config.DB.Where("id = ?", PerawatanID).First(&perawatan)
+
+	//masih ada kendala di file name dan keterangan jika kosong salah satu maka data yang disimpan nil
+	if UpdatePerawatan.Name != "" {
+		perawatan.Name = UpdatePerawatan.Name
+	}
+
+	if UpdatePerawatan.Keterangan != "" {
+		perawatan.Keterangan = UpdatePerawatan.Keterangan
+	}
+
+	if UpdatePerawatan.Harga > 0 {
+		perawatan.Harga = UpdatePerawatan.Harga
+	}
+
+	result := config.DB.Where("id = ?", PerawatanID).Updates(&perawatan)
+	return int(result.RowsAffected), perawatan
+}

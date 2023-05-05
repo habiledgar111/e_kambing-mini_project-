@@ -81,3 +81,48 @@ func CreatePerawatanFromKambing(c echo.Context) error {
 		"message": result,
 	})
 }
+
+func DeletePerawatanController(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	result := model.DeletePerawatan(id)
+
+	if result <= 0 {
+		return c.JSON(http.StatusInternalServerError, "cant delete data")
+	}
+
+	return c.JSON(http.StatusOK, "success deelete data")
+}
+
+func UpdatePerawatanController(c echo.Context) error {
+	id, err2 := strconv.Atoi(c.Param("id"))
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, "cant refactor id")
+	}
+	var perawatans model.Perawatan
+	json_map := make(map[string]interface{})
+	err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"Massage": "json cant empty",
+		})
+	}
+	harga, _ := strconv.ParseFloat(fmt.Sprintf("%v", json_map["harga"]), 3)
+	perawatans = model.Perawatan{
+		ID:         id,
+		Name:       fmt.Sprintf("%v", json_map["name"]),
+		Keterangan: fmt.Sprintf("%v", json_map["keterangan"]),
+		Harga:      harga,
+	}
+
+	result, update := model.UpdatePerawatan(id, perawatans)
+
+	if result <= 0 {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":       "cant update data",
+			"rows affected": result,
+			"update":        update,
+		})
+	}
+
+	return c.JSON(http.StatusOK, "sucess update data")
+}
