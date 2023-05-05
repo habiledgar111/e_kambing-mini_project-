@@ -80,3 +80,37 @@ func GetAllKambing(c echo.Context) error {
 		"UserandKambings": UserandKambings,
 	})
 }
+
+func UpdateKambingController(c echo.Context) error {
+	id, err2 := strconv.Atoi(c.Param("id"))
+	if err2 != nil {
+		c.JSON(http.StatusInternalServerError, "cant refactor id")
+	}
+	var kambing model.Kambing
+	json_map := make(map[string]interface{})
+	err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"Massage": "json cant empty",
+		})
+	}
+	harga, _ := strconv.ParseFloat(fmt.Sprintf("%v", json_map["harga"]), 3)
+	kambing = model.Kambing{
+		ID:     id,
+		Name:   fmt.Sprintf("%v", json_map["name"]),
+		Status: fmt.Sprintf("%v", json_map["status"]),
+		Harga:  harga,
+	}
+
+	result, update := model.UpdateKambing(id, kambing)
+
+	if result <= 0 {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":       "cant update data",
+			"rows affected": result,
+			"update":        update,
+		})
+	}
+
+	return c.JSON(http.StatusOK, "sucess update data")
+}
