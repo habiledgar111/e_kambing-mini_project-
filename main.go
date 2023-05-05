@@ -29,5 +29,7 @@ func main() {
 	e.POST("/kambing", controller.CreateKambingController)
 	e.GET("/perawatan/:id", controller.GetAllPerawatanFromKambing)
 	e.POST("/perawatan", controller.CreatePerawatanFromKambing)
+	e.GET("/transaksi:id", controller.GetAllTransaksi)
+	e.POST("/trasaksi", controller.CreateTransaksi)
 	e.Logger.Fatal(e.Start(":1323"))
 }

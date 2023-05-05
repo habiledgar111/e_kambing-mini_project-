@@ -49,6 +49,20 @@ func CreateKambingController(c echo.Context) error {
 		Harga:       harga,
 		UserID:      uint(UserID),
 	}
+
+	kambingID := strconv.Itoa(kambings.ID)
+	transaksi := model.Transaksi{
+		Name:       "membeli kambing",
+		Keterangan: ("memebeli kambing" + kambingID),
+		KambingID:  uint(kambings.ID),
+		Tanggal:    kambings.TanggalBeli,
+	}
+	result_kambing := model.CreateTransaksifromKambing(transaksi)
+
+	if result_kambing <= 0 {
+		return c.JSON(http.StatusInternalServerError, "cant save data transaksi")
+	}
+
 	result := model.CreateKambingModel(kambings)
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": result,
