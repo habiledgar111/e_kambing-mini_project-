@@ -63,13 +63,13 @@ func CreatePerawatanFromKambing(c echo.Context) error {
 		Harga:      harga,
 		Tanggal:    time.Now(),
 	}
-	result := model.CreatePerawatan(perawatans)
+	result, perawatanid := model.CreatePerawatan(perawatans)
 
 	transaksi := model.Transaksi{
-		Name:       ("Perawatan" + fmt.Sprintf("%v", json_map["KambingID"])),
-		Keterangan: perawatans.Keterangan,
-		KambingID:  perawatans.KambingID,
-		Tanggal:    perawatans.Tanggal,
+		Name:        ("Perawatan kambing - " + fmt.Sprintf("%v", json_map["KambingID"])),
+		Keterangan:  perawatans.Keterangan,
+		PerawatanID: perawatanid,
+		Tanggal:     perawatans.Tanggal,
 	}
 	result_transaksi := model.CreateTransaksifromPerawatan(transaksi)
 
@@ -87,6 +87,12 @@ func DeletePerawatanController(c echo.Context) error {
 	result := model.DeletePerawatan(id)
 
 	if result <= 0 {
+		return c.JSON(http.StatusInternalServerError, "cant delete data")
+	}
+
+	result_delete_transaksi := model.DeleteAllTransaksifromPerawatan(id)
+
+	if result_delete_transaksi <= 0 {
 		return c.JSON(http.StatusInternalServerError, "cant delete data")
 	}
 
@@ -121,6 +127,22 @@ func UpdatePerawatanController(c echo.Context) error {
 			"message":       "cant update data",
 			"rows affected": result,
 			"update":        update,
+		})
+	}
+
+	transaksi := model.Transaksi{
+		Name:        update.Name,
+		Keterangan:  update.Keterangan,
+		Harga:       update.Harga,
+		PerawatanID: perawatans.ID,
+	}
+	result_transaksi, update_transaksi := model.UpdateTransaksifromPerawatan(int(update.ID), transaksi)
+
+	if result_transaksi <= 0 {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":       " cant update transaksi",
+			"rows affected": result,
+			"update":        update_transaksi,
 		})
 	}
 

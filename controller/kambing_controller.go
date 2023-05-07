@@ -50,11 +50,13 @@ func CreateKambingController(c echo.Context) error {
 		UserID:      uint(UserID),
 	}
 
-	kambingID := strconv.Itoa(kambings.ID)
+	result, kambingid := model.CreateKambingModel(kambings)
+
+	kambingID := strconv.Itoa(kambingid)
 	transaksi := model.Transaksi{
 		Name:       "membeli kambing",
-		Keterangan: ("memebeli kambing" + kambingID),
-		KambingID:  uint(kambings.ID),
+		Keterangan: ("memebeli kambing - " + kambingID),
+		KambingID:  uint(kambingid),
 		Tanggal:    kambings.TanggalBeli,
 	}
 	result_kambing := model.CreateTransaksifromKambing(transaksi)
@@ -63,7 +65,6 @@ func CreateKambingController(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, "cant save data transaksi")
 	}
 
-	result := model.CreateKambingModel(kambings)
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": result,
 	})
@@ -112,5 +113,36 @@ func UpdateKambingController(c echo.Context) error {
 		})
 	}
 
+	transaksi := model.Transaksi{
+		Name:      update.Name,
+		Harga:     update.Harga,
+		KambingID: uint(kambing.ID),
+	}
+	result_transaksi, update_transaksi := model.UpdateTransaksifromKambing(int(update.ID), transaksi)
+
+	if result_transaksi <= 0 {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":       " cant update transaksi",
+			"rows affected": result,
+			"update":        update_transaksi,
+		})
+	}
+
 	return c.JSON(http.StatusOK, "sucess update data")
+}
+
+func DeleteKambingController(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	result := model.DeleteKambing(id)
+
+	if result <= 0 {
+		return c.JSON(http.StatusInternalServerError, "cant delete data")
+	}
+
+	result_delete_transaksi := model.DeleteAllTransaksifromKambing(id)
+	if result_delete_transaksi <= 0 {
+		return c.JSON(http.StatusInternalServerError, "cant delete data")
+	}
+
+	return c.JSON(http.StatusOK, "success deelete data")
 }

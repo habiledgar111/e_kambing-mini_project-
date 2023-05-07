@@ -4,6 +4,7 @@ import (
 	// "database/sql"
 	// "mini_project/config"
 	"mini_project/config"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -41,4 +42,80 @@ func CreateTransaksifromKambing(transaksi Transaksi) int {
 func CreateTransaksifromPerawatan(Transaksi Transaksi) int {
 	result := config.DB.Omit("KambingID", "UserID").Create(&Transaksi)
 	return int(result.RowsAffected)
+}
+
+func DeleteTransaksi(id int) int {
+	result := config.DB.Delete(&Transaksi{}, id)
+	return int(result.RowsAffected)
+}
+
+func DeleteAllTransaksifromKambing(id int) int {
+	result := config.DB.Where("kambing_id = ?", id).Delete(&Transaksi{})
+	return int(result.RowsAffected)
+}
+
+func DeleteAllTransaksifromPerawatan(id int) int {
+	result := config.DB.Where("perawatan_id = ?", id).Delete(&Transaksi{})
+	return int(result.RowsAffected)
+}
+
+func UpdateTransaksi(id int, updatetransaksi Transaksi) (int, Transaksi) {
+	var transaksi Transaksi
+	config.DB.Where("id = ?", id).First(&transaksi)
+
+	//masih ada kendala di file name dan keterangan jika kosong salah satu maka data yang disimpan nil
+	if updatetransaksi.Name != "" {
+		transaksi.Name = updatetransaksi.Name
+	}
+
+	if updatetransaksi.Keterangan != "" {
+		transaksi.Keterangan = updatetransaksi.Keterangan
+	}
+
+	if updatetransaksi.Harga > 0 {
+		transaksi.Harga = updatetransaksi.Harga
+	}
+
+	result := config.DB.Where("id = ?", id).Updates(&transaksi)
+	return int(result.RowsAffected), transaksi
+}
+
+func UpdateTransaksifromKambing(id int, updatetransaksi Transaksi) (int, Transaksi) {
+	var transaksi Transaksi
+	config.DB.Where("kambing_id = ?", id).First(&transaksi)
+
+	//masih ada kendala di file name dan keterangan jika kosong salah satu maka data yang disimpan nil
+	if updatetransaksi.Name != "" {
+		transaksi.Name = updatetransaksi.Name
+	}
+
+	transaksi.Keterangan = "membeli kambing - " + strconv.Itoa(id)
+
+	if updatetransaksi.Harga > 0 {
+		transaksi.Harga = updatetransaksi.Harga
+	}
+
+	result := config.DB.Where("kambing_id = ?", id).Updates(&transaksi)
+	return int(result.RowsAffected), transaksi
+}
+
+func UpdateTransaksifromPerawatan(id int, updatetransaksi Transaksi) (int, Transaksi) {
+	var transaksi Transaksi
+	config.DB.Where("perawatan_id = ?", id).First(&transaksi)
+
+	//masih ada kendala di file name dan keterangan jika kosong salah satu maka data yang disimpan nil
+	if updatetransaksi.Name != "" {
+		transaksi.Name = updatetransaksi.Name
+	}
+
+	if updatetransaksi.Keterangan != "" {
+		transaksi.Keterangan = updatetransaksi.Keterangan
+	}
+
+	if updatetransaksi.Harga > 0 {
+		transaksi.Harga = updatetransaksi.Harga
+	}
+
+	result := config.DB.Where("perawatan_id = ?", id).Updates(&transaksi)
+	return int(result.RowsAffected), transaksi
 }
