@@ -12,12 +12,13 @@ import (
 
 type Perawatan struct {
 	gorm.Model
-	ID         int       `gorm:"primary_key;not null"`
-	Name       string    `json:"name" form:"name" gorm:"type:varchar(255)"`
-	Keterangan string    `json:"keterangan" form:"keterangan" gorm:";type:varchar(255)"`
-	Harga      float64   `json:"harga" form:"harga" gorm:"type:double"`
-	Tanggal    time.Time `json:"tanggalperatawan" form:"tanggal"`
-	KambingID  uint      `json:"kambing_id" form:"kambing_id"`
+	ID          int       `gorm:"primary_key;not null"`
+	Name        string    `json:"name" form:"name" gorm:"type:varchar(255)"`
+	Keterangan  string    `json:"keterangan" form:"keterangan" gorm:";type:varchar(255)"`
+	Harga       float64   `json:"harga" form:"harga" gorm:"type:double"`
+	Tanggal     time.Time `json:"tanggalperatawan" form:"tanggal"`
+	KambingID   uint      `json:"kambing_id" form:"kambing_id"`
+	TransaksiID uint      `json:"transaksi_id" form:"transaksi_id"`
 }
 
 var (
@@ -41,9 +42,9 @@ func GetAllPerawatan(id_kambing int) (Kambing, error) {
 
 }
 
-func CreatePerawatan(perawatan Perawatan) int {
+func CreatePerawatan(perawatan Perawatan) (int, int) {
 	result := config.DB.Create((&perawatan))
-	return int(result.RowsAffected)
+	return int(result.RowsAffected), perawatan.ID
 }
 
 func DeletePerawatan(PerawatanID int) int {

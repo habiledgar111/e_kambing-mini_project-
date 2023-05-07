@@ -20,21 +20,9 @@ type Kambing struct {
 	Harga       float64     `json:"harga" form:"harga" gorm:"type:double"`
 	UserID      uint        `json:"user_id" form:"user_id"`
 	Perawatans  []Perawatan `json:"perawatans"`
+	TransaksiID uint        `json:"transaksi_id" form:"transaksi_id"`
 }
 
-var (
-// err error
-// db  *gorm.DB
-)
-
-//	func init() {
-//		//connect db
-//		dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
-//		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-//		if err != nil {
-//			panic(err)
-//		}
-//	}
 func GetAllKambing() ([]Kambing, error) {
 	var kambing []Kambing
 	// err := db.Model(&Kambing{}).Preload("UserID").Find(&kambing).Error
@@ -49,9 +37,9 @@ func GetKambingByID(id int) (Kambing, error) {
 	return kambing, err
 }
 
-func CreateKambingModel(kambing Kambing) int {
+func CreateKambingModel(kambing Kambing) (int, int) {
 	result := config.DB.Create(&kambing)
-	return int(result.RowsAffected)
+	return int(result.RowsAffected), kambing.ID
 }
 
 func GetAllKambingsfromUser(id int) (User, error) {
@@ -88,4 +76,9 @@ func UpdateKambing(id int, updatekambing Kambing) (int, Kambing) {
 
 	result := config.DB.Where("id = ?", id).Updates(&kambing)
 	return int(result.RowsAffected), kambing
+}
+
+func DeleteKambing(id int) int {
+	result := config.DB.Delete(&Kambing{}, id)
+	return int(result.RowsAffected)
 }
