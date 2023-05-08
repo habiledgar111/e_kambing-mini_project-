@@ -17,10 +17,10 @@ RUN go mod download
 COPY . ./
 
 # compile application
-RUN go build -o /go-gorm
+RUN go build -o /e-kambing
 
 # tells Docker that the container listens on specified network ports at runtime
 EXPOSE 8080
 
 # command to be used to execute when the image is used to start a container
-CMD [ "/go-gorm" ]
+CMD [ "/e-kambing" ]
