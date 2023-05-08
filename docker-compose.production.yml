@@ -2,7 +2,7 @@ version: "3.8"
 
 services:  
   go-application:
-    container_name: go-application
+    container_name: miniprojectcontainer
     build: .
     ports: 
       - 8081:8080
@@ -10,6 +10,6 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=Mbahbambang123
       - DB_DB=miniproject
-      - DB_HOST=valiant-carrier-385811:asia-southeast2:miniprojectdb
+      - DB_HOST=miniproject.ck6i8ucy7zfd.us-east-1.rds.amazonaws.com
       - DB_PORT=3306
     restart: on-failure
