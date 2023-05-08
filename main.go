@@ -38,5 +38,5 @@ func main() {
 	e.POST("/transaksi", controller.CreateTransaksi)
 	e.PUT("/transaksi/:id", controller.UpdateTransaksiController)
 	e.DELETE("/transaksi/:id", controller.DeleteTransaksiController)
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
