@@ -1,0 +1,43 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Deploy
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: '${{ secrets.GCE_SA_KEY }}'
+        command: 'echo hello word'
+
+    # - id: 'compute-ssh'
+    #   uses: 'google-github-actions/ssh-compute@v0'
+    #   with:
+    #     instance_name: 'instance-1'
+    #     zone: 'asia-southeast2-a'
+    #     user: 'mfirdauss31'
+    #     ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
+    #     command: 'cd /home/mfirdauss31/go-gorm/ && git pull && docker compose -f docker-compose.production.yml up -d --build'
+    
+    # - name: Deploy
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.HOST }}
+    #     username: ${{ secrets.USERNAME }}
+    #     key: ${{ secrets.PRIVATE_KEY }}
+    #     port: 22
+    #     script: |
+    #       export PATH=$PATH:/usr/local/go/bin
+    #       cd app/go-gorm/
+    #       git pull
+    #       sudo docker compose -f docker-compose.production.yml up -d --build
