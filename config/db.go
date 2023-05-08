@@ -4,7 +4,6 @@ import (
 	// "mini_project/model"
 
 	"fmt"
-	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -17,11 +16,11 @@ var (
 
 func Open() error {
 	//connect db
-	dbUsername := os.Getenv("DB_USERNAME")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbHost := os.Getenv("DB_HOST")
-	dbName := os.Getenv("DB_DB")
-	dbPort := os.Getenv("DB_PORT")
+	dbUsername := "root"
+	dbPassword := "Mbahbambang123"
+	dbHost := "miniproject.ck6i8ucy7zfd.us-east-1.rds.amazonaws.com"
+	dbName := "miniproject"
+	dbPort := "3306"
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUsername, dbPassword, dbHost, dbPort, dbName)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})

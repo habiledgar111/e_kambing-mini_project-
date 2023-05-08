@@ -8,28 +8,24 @@ import (
 	"strconv"
 	"time"
 
-	"gorm.io/driver/mysql"
-
-	"gorm.io/gorm"
-
 	"github.com/labstack/echo/v4"
 )
 
-var (
-	DB_kambing *gorm.DB
-	kambing    *model.Kambing
-)
+// var (
+// 	DB_kambing *gorm.DB
+// 	kambing    *model.Kambing
+// )
 
-func init() {
-	//connect db
-	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	DB_kambing = db
-	DB_kambing.AutoMigrate(kambing)
-}
+// func init() {
+// 	//connect db
+// 	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
+// 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	DB_kambing = db
+// 	DB_kambing.AutoMigrate(kambing)
+// }
 
 func CreateKambingController(c echo.Context) error {
 	var kambings model.Kambing
