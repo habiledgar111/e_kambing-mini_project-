@@ -31,8 +31,8 @@ jobs:
         zone: 'asia-southeast2-a'
         user: 'habiledgar111'
         ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-        command: 'cd /home/habiledgar111/mini_project/ && git pull && docker compose -f docker-compose.production.yml up -d --build'
-    
+        # command: 'cd /home/habiledgar111/mini_project/ && git pull && docker compose -f docker-compose.production.yml up -d --build'
+        command: 'echo hello word'
     # - name: Deploy
     #   uses: appleboy/ssh-action@master
     #   with:
