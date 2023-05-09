@@ -29,3 +29,16 @@ func Open() error {
 	}
 	return nil
 }
+
+func OpenLocal() error {
+	dsn := "root:Mbahbambang123@tcp(localhost:3306)/miniproject?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	DB = db
+	if err != nil {
+		return err
+	}
+	return nil
+}
